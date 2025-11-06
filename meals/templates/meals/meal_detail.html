@@ -1,0 +1,152 @@
+{% extends 'meals/base.html' %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <h1 class="mb-2">{{ meal.brand }} - {{ meal.name }}</h1>
+            <p class="lead text-muted">{{ meal.description }}</p>
+            
+            <div class="mb-4">
+                <span class="badge bg-primary me-2">{{ meal.get_size_category_display }}</span>
+                <span class="badge bg-success me-2">{{ meal.get_life_stage_display }}</span>
+                {% if meal.preference_tags %}
+                    <span class="badge bg-info">{{ meal.preference_tags }}</span>
+                {% endif %}
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Daily Portions -->
+            <h3 class="mb-3">Daily Portions for {{ weight }} lb Dog</h3>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="display-6 text-primary">{{ portions.dry_food_cups }}</div>
+                            <small class="text-muted">cups<br>Dry Food</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="display-6 text-primary">{{ portions.wet_food_oz }}</div>
+                            <small class="text-muted">oz<br>Wet Food</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="display-6 text-primary">{{ portions.treat_calories }}</div>
+                            <small class="text-muted">cal<br>Treats</small>
+                        </div>
+                    </div>
+                    <hr>
+                    <p class="text-center mb-0"><strong>Total: {{ portions.daily_calories }} calories/day</strong></p>
+                </div>
+            </div>
+
+            <!-- Meal Components -->
+            <h3 class="mb-3">Meal Components</h3>
+            
+            <!-- Dry Food -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ meal.dry_food.name }}</h5>
+                    <p class="card-text">{{ meal.dry_food.description }}</p>
+                    <p class="text-muted mb-2">
+                        <strong>Package Size:</strong> {{ meal.dry_food.package_size }} {{ meal.dry_food.package_unit }} | 
+                        <strong>Price:</strong> ${{ meal.dry_food.price }}
+                    </p>
+                    <a href="{{ meal.dry_food.affiliate_link }}" class="btn btn-outline-primary" target="_blank">
+                        Buy on Chewy →
+                    </a>
+                </div>
+            </div>
+
+            <!-- Wet Food -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ meal.wet_food.name }}</h5>
+                    <p class="card-text">{{ meal.wet_food.description }}</p>
+                    <p class="text-muted mb-2">
+                        <strong>Package Size:</strong> {{ meal.wet_food.package_size }} {{ meal.wet_food.package_unit }} | 
+                        <strong>Price:</strong> ${{ meal.wet_food.price }}
+                    </p>
+                    <a href="{{ meal.wet_food.affiliate_link }}" class="btn btn-outline-primary" target="_blank">
+                        Buy on Chewy →
+                    </a>
+                </div>
+            </div>
+
+            <!-- Treats -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ meal.treats.name }}</h5>
+                    <p class="card-text">{{ meal.treats.description }}</p>
+                    <p class="text-muted mb-2">
+                        <strong>Package Size:</strong> {{ meal.treats.package_size }} {{ meal.treats.package_unit }} | 
+                        <strong>Price:</strong> ${{ meal.treats.price }}
+                    </p>
+                    <a href="{{ meal.treats.affiliate_link }}" class="btn btn-outline-primary" target="_blank">
+                        Buy on Chewy →
+                    </a>
+                </div>
+            </div>
+
+            <!-- Save Meal Form -->
+            {% if user.is_authenticated %}
+            <div class="card mt-4 bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">Save This Meal Plan</h5>
+                    <form method="POST" action="{% url 'save_meal' meal.id %}">
+                        {% csrf_token %}
+                        <div class="row align-items-end">
+                            <div class="col-md-8">
+                                <label class="form-label">Select a pet:</label>
+                                <select name="pet_id" class="form-select" required>
+                                    <option value="">Select a pet...</option>
+                                    {% for pet in user.pets.all %}
+                                        <option value="{{ pet.id }}">{{ pet.name }} ({{ pet.weight }} lbs)</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-success w-100">Save Meal Plan</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- 45-Day Supply -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">45-Day Supply</h5>
+                    <p class="card-text">What you'll need to buy:</p>
+                    <ul class="list-unstyled">
+                        <li>✓ {{ shopping_list.dry_food.quantity }} bags of dry food</li>
+                        <li>✓ {{ shopping_list.wet_food.quantity }} packs of wet food</li>
+                        <li>✓ {{ shopping_list.treats.quantity }} treat bags</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feeding Tips -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Feeding Tips</h5>
+                    <ul class="small">
+                        <li>Split daily portions into 2 meals</li>
+                        <li>Always provide fresh water</li>
+                        <li>Monitor weight and adjust as needed</li>
+                        <li>Transition gradually over 7-10 days</li>
+                    </ul>
+                    <a href="{% url 'transition_guide' %}" class="btn btn-sm btn-outline-primary w-100">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

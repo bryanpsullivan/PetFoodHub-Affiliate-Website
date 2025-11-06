@@ -1,0 +1,53 @@
+[
+  {
+    "model": "meals.product",
+    "pk": 1,
+    "fields": {
+      "brand": "Purina Pro Plan",
+      "name": "Adult Chicken & Rice Dry Dog Food",
+      "product_type": "dry",
+      "calories_per_oz": 95,
+      "package_size": 15,
+      "package_unit": "lbs",
+      "price": 45.99,
+      "affiliate_link": "https://www.chewy.com/purina-pro-plan-savor-adult-shredded/dp/52456",
+      "preferences": "natural",
+      "description": "High-quality protein for strong muscles",
+      "is_active": true
+    }
+  },
+  {
+    "model": "meals.product",
+    "pk": 2,
+    "fields": {
+      "brand": "Purina Pro Plan",
+      "name": "Adult Wet Food Variety Pack",
+      "product_type": "wet",
+      "calories_per_oz": 25,
+      "package_size": 12,
+      "package_unit": "oz",
+      "price": 24.99,
+      "affiliate_link": "https://www.chewy.com/purina-pro-plan-savory-adult-wet/dp/12345",
+      "preferences": "natural",
+      "description": "Delicious wet food for hydration",
+      "is_active": true
+    }
+  },
+  {
+    "model": "meals.product",
+    "pk": 3,
+    "fields": {
+      "brand": "Purina Pro Plan",
+      "name": "Training Treats",
+      "product_type": "treat",
+      "calories_per_oz": 87.5,
+      "package_size": 16,
+      "package_unit": "oz",
+      "price": 8.99,
+      "affiliate_link": "https://www.chewy.com/purina-pro-plan-training-treats/dp/67890",
+      "preferences": "natural",
+      "description": "Healthy training rewards",
+      "is_active": true
+    }
+  }
+]

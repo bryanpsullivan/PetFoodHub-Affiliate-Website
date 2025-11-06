@@ -1,0 +1,94 @@
+{% extends 'meals/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-4">Find the Perfect Meal Plan for Your Dog</h1>
+                <p class="lead mb-4">Get personalized meal recommendations with exact portions, shopping lists, and affiliate links to buy everything you need.</p>
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                    <a href="{% url 'meal_finder' %}" class="btn btn-primary btn-lg px-4">Find Meals Now</a>
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg px-4">Create Account</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card feature-box">
+                    <div class="card-body text-center">
+                        <div class="display-4 mb-3">🎯</div>
+                        <h3 class="h5 fw-bold">Personalized</h3>
+                        <p class="text-muted">Meal plans tailored to your dog's weight, age, and activity level</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-box">
+                    <div class="card-body text-center">
+                        <div class="display-4 mb-3">📊</div>
+                        <h3 class="h5 fw-bold">Calculated Portions</h3>
+                        <p class="text-muted">Exact amounts of dry food, wet food, and treats based on nutritional science</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-box">
+                    <div class="card-body text-center">
+                        <div class="display-4 mb-3">🛒</div>
+                        <h3 class="h5 fw-bold">Easy Shopping</h3>
+                        <p class="text-muted">Direct links to purchase everything on Chewy and other retailers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Meals Section -->
+{% if featured_meals %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Featured Meal Plans</h2>
+        <div class="row g-4">
+            {% for meal in featured_meals %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ meal.brand }} {{ meal.name }}</h5>
+                        <div class="mb-3">
+                            <span class="badge bg-primary">{{ meal.get_size_category_display }}</span>
+                            <span class="badge bg-success">{{ meal.get_life_stage_display }}</span>
+                        </div>
+                        <p class="card-text text-muted">{{ meal.description|truncatewords:20 }}</p>
+                        <a href="{% url 'meal_detail' meal.id %}" class="btn btn-outline-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="cta-section py-5">
+    <div class="container text-center">
+        <h2 class="mb-3">Ready to Get Started?</h2>
+        <p class="lead mb-4">Answer a few questions about your dog and get instant meal recommendations</p>
+        <a href="{% url 'meal_finder' %}" class="btn btn-primary btn-lg px-5">Find Your Perfect Meal Plan</a>
+    </div>
+</section>
+
+{% endblock %}

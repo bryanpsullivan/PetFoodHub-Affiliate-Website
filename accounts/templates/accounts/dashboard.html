@@ -1,0 +1,120 @@
+{% extends 'meals/base.html' %}
+
+{% block content %}
+
+<!-- Header Section -->
+<div class="bg-light py-4 mb-4">
+    <div class="container">
+        <h1 class="mb-0">Welcome, {{ user.username }}! 🐾</h1>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        
+        <!-- My Pets Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="mb-0">My Pets</h2>
+                <a href="{% url 'add_pet' %}" class="btn btn-primary">
+                    + Add Pet
+                </a>
+            </div>
+            
+            {% if pets %}
+                <div class="row g-3">
+                    {% for pet in pets %}
+                    <div class="col-12">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="card-title mb-2">🐕 {{ pet.name }}</h5>
+                                        <p class="card-text mb-1"><strong>Weight:</strong> {{ pet.weight }} lbs</p>
+                                        <p class="card-text mb-1"><strong>Age:</strong> {{ pet.age_months }} months</p>
+                                        <p class="card-text mb-1"><strong>Stage:</strong> {{ pet.get_life_stage_display }}</p>
+                                        <p class="card-text mb-0"><strong>Activity:</strong> {{ pet.get_activity_level_display }}</p>
+                                    </div>
+                                    <a href="{% url 'edit_pet' pet.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <p class="mb-0">No pets added yet. Add your first pet to get started!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Saved Meal Plans Section -->
+        <div class="col-lg-6 mb-4">
+            <h2 class="mb-3">Saved Meal Plans</h2>
+            
+            {% if saved_meals %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Pet</th>
+                                <th>Meal Plan</th>
+                                <th>Daily</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for saved in saved_meals %}
+                            <tr>
+                                <td><strong>{{ saved.pet.name }}</strong></td>
+                                <td>
+                                    {{ saved.meal.brand }}<br>
+                                    <small class="text-muted">{{ saved.meal.name }}</small>
+                                </td>
+                                <td>
+                                    {{ saved.daily_calories }} cal<br>
+                                    <small class="text-muted">
+                                        {{ saved.dry_food_oz }} oz dry<br>
+                                        {{ saved.wet_food_oz }} oz wet
+                                    </small>
+                                </td>
+                                <td>
+                                    <a href="{% url 'meal_detail' saved.meal.id %}?weight={{ saved.pet.weight }}&activity_level={{ saved.pet.activity_level }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <p class="mb-2">No saved meals yet.</p>
+                    <a href="{% url 'meal_finder' %}" class="btn btn-sm btn-primary">Find meal plans for your pets!</a>
+                </div>
+            {% endif %}
+        </div>
+        
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">Quick Actions</h5>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{% url 'meal_finder' %}" class="btn btn-primary">🔍 Find New Meals</a>
+                        <a href="{% url 'add_pet' %}" class="btn btn-outline-primary">➕ Add Another Pet</a>
+                        <a href="{% url 'nutrition_basics' %}" class="btn btn-outline-secondary">📚 Learn About Nutrition</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

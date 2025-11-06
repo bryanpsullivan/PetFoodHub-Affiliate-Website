@@ -1,0 +1,84 @@
+{% extends 'meals/base.html' %}
+
+{% block content %}
+
+<!-- Header Section -->
+<div class="bg-light py-4">
+    <div class="container">
+        <h1 class="mb-3">Recommended Meal Plans</h1>
+        <div class="alert alert-info mb-0">
+            <strong>Your Dog's Profile:</strong> {{ weight }} lbs | {{ life_stage|title }} | {{ activity_level|title }} Activity<br>
+            <strong>Daily Needs:</strong> {{ portions.daily_calories }} calories | 
+            {{ portions.dry_food_cups }} cups dry food | 
+            {{ portions.wet_food_oz }} oz wet food | 
+            {{ portions.treat_calories }} cal treats
+        </div>
+    </div>
+</div>
+
+<!-- Results Section -->
+<div class="container my-5">
+    {% for rec in recommendations %}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h3 class="card-title">{{ rec.meal.brand }} - {{ rec.meal.name }}</h3>
+                    <p class="text-muted">{{ rec.meal.description }}</p>
+                    
+                    <h5 class="mt-4 mb-3">45-Day Shopping List:</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <strong>{{ rec.shopping_list.dry_food.product.name }}</strong><br>
+                                        <small class="text-muted">{{ rec.shopping_list.dry_food.quantity }} bags × {{ rec.shopping_list.dry_food.product.package_size }} lbs</small>
+                                    </td>
+                                    <td class="text-end">${{ rec.shopping_list.dry_food.product.price }}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>{{ rec.shopping_list.wet_food.product.name }}</strong><br>
+                                        <small class="text-muted">{{ rec.shopping_list.wet_food.quantity }} packs</small>
+                                    </td>
+                                    <td class="text-end">${{ rec.shopping_list.wet_food.product.price }}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>{{ rec.shopping_list.treats.product.name }}</strong><br>
+                                        <small class="text-muted">{{ rec.shopping_list.treats.quantity }} bags</small>
+                                    </td>
+                                    <td class="text-end">${{ rec.shopping_list.treats.product.price }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="text-center p-3 bg-light rounded">
+                        <div class="display-6 fw-bold text-primary">${{ rec.total_cost }}</div>
+                        <div class="text-muted mb-3">${{ rec.cost_per_day }}/day</div>
+                        <a href="{% url 'meal_detail' rec.meal.id %}?weight={{ weight }}&activity_level={{ activity_level }}" class="btn btn-primary btn-lg w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-warning text-center">
+        <h4>No meals found matching your criteria</h4>
+        <p class="mb-0">We're constantly adding new meal plans. Try adjusting your preferences or search again.</p>
+    </div>
+    {% endfor %}
+
+    <!-- Back Button -->
+    <div class="text-center mt-4">
+        <a href="{% url 'meal_finder' %}" class="btn btn-outline-secondary">
+            ← Back to Meal Finder
+        </a>
+    </div>
+</div>
+
+{% endblock %}

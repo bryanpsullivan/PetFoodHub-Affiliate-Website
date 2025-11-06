@@ -1,0 +1,178 @@
+{% extends 'meals/base.html' %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="text-center mb-4">Find Your Dog's Perfect Meal Plan</h1>
+            
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <form method="GET" action="{% url 'meal_results' %}" id="mealFinderForm">
+                        
+                        {% if user.is_authenticated and user.pets.all %}
+                        <!-- Pet Selection (Only for logged-in users with pets) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Select Your Pet</label>
+                            <select class="form-select form-select-lg" id="petSelector" onchange="toggleCustomInputs()">
+                                <option value="custom">Enter Custom Information</option>
+                                {% for pet in user.pets.all %}
+                                    <option value="{{ pet.id }}" 
+                                            data-weight="{{ pet.weight }}" 
+                                            data-life-stage="{{ pet.life_stage }}"
+                                            data-activity="{{ pet.activity_level }}">
+                                        {{ pet.name }} ({{ pet.weight }} lbs, {{ pet.get_life_stage_display }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">Or choose "Enter Custom Information" below</small>
+                        </div>
+                        
+                        <hr class="my-4">
+                        {% endif %}
+
+                        <div id="customInputs">
+                            <!-- Weight -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">1. What is your dog's weight?</label>
+                                <div class="input-group input-group-lg">
+                                    <input type="number" class="form-control" id="weight" name="weight" min="5" max="150" required placeholder="Enter weight">
+                                    <span class="input-group-text">lbs</span>
+                                </div>
+                                <small class="text-muted">Enter weight between 5-150 lbs</small>
+                            </div>
+
+                            <!-- Life Stage -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">2. What is your dog's life stage?</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="life_stage" id="puppy" value="puppy" required>
+                                    <label class="btn btn-outline-primary" for="puppy">
+                                        Puppy<br><small>(4-12 months)</small>
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="life_stage" id="adult" value="adult" checked>
+                                    <label class="btn btn-outline-primary" for="adult">
+                                        Adult<br><small>(1-8 years)</small>
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="life_stage" id="senior" value="senior">
+                                    <label class="btn btn-outline-primary" for="senior">
+                                        Senior<br><small>(8+ years)</small>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Activity Level -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">3. What is your dog's activity level?</label>
+                                <div class="d-grid gap-2">
+                                    <input type="radio" class="btn-check" name="activity_level" id="low" value="low">
+                                    <label class="btn btn-outline-primary text-start" for="low">
+                                        <strong>Low</strong> - Mostly sedentary, older dogs
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="activity_level" id="moderate" value="moderate" checked>
+                                    <label class="btn btn-outline-primary text-start" for="moderate">
+                                        <strong>Moderate</strong> - Daily walks, average activity
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="activity_level" id="high" value="high">
+                                    <label class="btn btn-outline-primary text-start" for="high">
+                                        <strong>High</strong> - Very active, working dogs, lots of exercise
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preferences (always shown) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">{% if user.is_authenticated and user.pets.all %}4{% else %}4{% endif %}. Any preferences? (Optional)</label>
+                            <select class="form-select form-select-lg" name="preference">
+                                <option value="">No preference</option>
+                                <option value="budget">Budget-Friendly</option>
+                                <option value="premium">Premium Quality</option>
+                                <option value="grain_free">Grain-Free</option>
+                                <option value="organic">Organic</option>
+                                <option value="natural">Natural Ingredients</option>
+                            </select>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Get Meal Recommendations
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="card mt-4 bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">What happens next?</h5>
+                    <ul class="mb-0">
+                        <li>We'll calculate your dog's daily calorie needs</li>
+                        <li>Show you 5-10 curated meal options from trusted brands</li>
+                        <li>Provide exact portions and a 45-day shopping list</li>
+                        <li>Include direct affiliate links to purchase</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleCustomInputs() {
+    const petSelector = document.getElementById('petSelector');
+    const customInputs = document.getElementById('customInputs');
+    const weightInput = document.getElementById('weight');
+    const lifeStageInputs = document.getElementsByName('life_stage');
+    const activityInputs = document.getElementsByName('activity_level');
+    
+    if (petSelector && petSelector.value !== 'custom') {
+        // User selected a pet - auto-fill the form
+        const selectedOption = petSelector.options[petSelector.selectedIndex];
+        const weight = selectedOption.getAttribute('data-weight');
+        const lifeStage = selectedOption.getAttribute('data-life-stage');
+        const activity = selectedOption.getAttribute('data-activity');
+        
+        // Fill in weight
+        weightInput.value = weight;
+        
+        // Select life stage
+        lifeStageInputs.forEach(input => {
+            if (input.value === lifeStage) {
+                input.checked = true;
+            }
+        });
+        
+        // Select activity level
+        activityInputs.forEach(input => {
+            if (input.value === activity) {
+                input.checked = true;
+            }
+        });
+        
+        // Optionally disable inputs (or leave editable)
+        // customInputs.style.opacity = '0.7';
+    } else {
+        // Custom selected - clear form
+        weightInput.value = '';
+        customInputs.style.opacity = '1';
+    }
+}
+
+// Auto-fill on page load if first pet is selected
+window.addEventListener('DOMContentLoaded', function() {
+    const petSelector = document.getElementById('petSelector');
+    if (petSelector && petSelector.value !== 'custom') {
+        toggleCustomInputs();
+    }
+});
+</script>
+
+{% endblock %}

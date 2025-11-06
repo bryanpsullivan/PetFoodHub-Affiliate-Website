@@ -1,0 +1,63 @@
+{% extends 'meals/base.html' %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">Add a New Pet</h2>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Pet's Name</label>
+                            <input type="text" class="form-control form-control-lg" id="name" name="name" required placeholder="e.g., Max, Bella">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="weight" class="form-label">Weight (lbs)</label>
+                            <input type="number" class="form-control form-control-lg" id="weight" name="weight" min="5" max="150" required placeholder="e.g., 30">
+                            <small class="text-muted">Between 5-150 lbs</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="age_months" class="form-label">Age (months)</label>
+                            <input type="number" class="form-control form-control-lg" id="age_months" name="age_months" min="4" max="200" required placeholder="e.g., 24">
+                            <small class="text-muted">Age in months (e.g., 24 months = 2 years)</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Activity Level</label>
+                            <div class="d-grid gap-2">
+                                <input type="radio" class="btn-check" name="activity_level" id="low" value="low">
+                                <label class="btn btn-outline-primary text-start" for="low">
+                                    <strong>Low</strong> - Mostly sedentary, older dogs
+                                </label>
+
+                                <input type="radio" class="btn-check" name="activity_level" id="moderate" value="moderate" checked>
+                                <label class="btn btn-outline-primary text-start" for="moderate">
+                                    <strong>Moderate</strong> - Daily walks, average activity
+                                </label>
+
+                                <input type="radio" class="btn-check" name="activity_level" id="high" value="high">
+                                <label class="btn btn-outline-primary text-start" for="high">
+                                    <strong>High</strong> - Very active, working dogs
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Add Pet</button>
+                            <a href="{% url 'user_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
